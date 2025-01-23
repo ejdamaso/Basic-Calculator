@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Calculator</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to the CSS file -->
+</head>
+<body>
+    <div class="calculator">
+        <div class="display" id="display"></div>
+        <div class="buttons">
+            <button class="button clear" id="clear">C</button>
+            <button class="button operator" id="divide">/</button>
+            <button class="button operator" id="multiply">*</button>
+            <button class="button operator" id="subtract">-</button>
+            <button class="button">7</button>
+            <button class="button">8</button>
+            <button class="button">9</button>
+            <button class="button operator" id="add">+</button>
+            <button class="button">4</button>
+            <button class="button">5</button>
+            <button class="button">6</button>
+            <button class="button equals" id="equals">=</button>
+            <button class="button">1</button>
+            <button class="button">2</button>
+            <button class="button">3</button>
+            <button class="button">0</button>
+            <button class="button">.</button>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById('display');
+        let buttons = Array.from(document.getElementsByClassName('button'));
+        let operatorButtons = Array.from(document.getElementsByClassName('operator'));
+        let currentInput = '';
+        let previousInput = '';
+        let operator = null;
+
+        // Update display with current input
+        function updateDisplay() {
+            display.textContent = currentInput || '0';
+        }
+
+        // Handle number button click
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                if (button.textContent === 'C') {
+                    currentInput = '';
+                    previousInput = '';
+                    operator = null;
+                    updateDisplay();
+                } else if (button.textContent === '=') {
+                    if (previousInput && operator && currentInput) {
+                        currentInput = evaluate(previousInput, currentInput, operator);
+                        operator = null;
+                        previousInput = '';
+                        updateDisplay();
+                    }
+                } else if (['+', '-', '*', '/'].includes(button.textContent)) {
+                    if (currentInput) {
+                        if (previousInput) {
+                            currentInput = evaluate(previousInput, currentInput, operator);
+                            previousInput = currentInput;
+                        } else {
+                            previousInput = currentInput;
+                        }
+                        operator = button.textContent;
+                        currentInput = '';
+                    }
+                } else {
+                    currentInput += button.textContent;
+                    updateDisplay();
+                }
+            });
+        });
+
+        // Evaluate expression
+        function evaluate(num1, num2, operator) {
+            num1 = parseFloat(num1);
+            num2 = parseFloat(num2);
+            switch (operator) {
+                case '+': return num1 + num2;
+                case '-': return num1 - num2;
+                case '*': return num1 * num2;
+                case '/': return num1 / num2;
+                default: return num2;
+            }
+        }
+    </script>
+</body>
+</html>
